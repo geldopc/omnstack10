@@ -30,11 +30,37 @@ module.exports = {
         location
       });
     }
-    // console.log(apiRes.data);
     return res.json(dev);
   },
-
-  async index(req, res) {
+  async update(req, res) {
+    const { github_username } = req.query;
+    const { techs, latitude, longitude } = req.body;
+    let dev = await Dev.findOne({ github_username });
+    if (!dev) {
+      return res.json({ msg: "Dev não encontrado!" });
+    }
+    const techsArray = parseStringAsArray(techs);
+    const location = {
+      type: "Point",
+      coordinates: [longitude, latitude]
+    };
+    await Dev.update({
+      techs: techsArray,
+      location
+    });
+    dev = await Dev.findOne({ github_username });
+    return res.json({ dev });
+  },
+  async destroy(req, res) {
+    const { github_username } = req.query;
+    let dev = await Dev.findOne({ github_username });
+    if (!dev) {
+      return res.json({ msg: "Dev não encontrado!" });
+    }
+    await Dev.remove(dev);
+    return res.json({ msg: `${github_username} foi removido com sucesso!` });
+  },
+  async index(_, res) {
     const devs = await Dev.find();
     return res.json(devs);
   }

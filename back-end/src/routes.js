@@ -31,6 +31,8 @@ routes.post("/users", (request, response) => {
 });
 //Cadastrar Devs
 routes.post("/devs", DevController.store);
+routes.delete("/devs", DevController.destroy);
+routes.put("/devs", DevController.update);
 routes.get("/devs", DevController.index);
 routes.get("/search", SearchController.index);
 module.exports = routes;
